@@ -1,0 +1,64 @@
+{% extends 'core/navbar.html' %}
+{% load static %}
+{% block content %}
+      <!-- inner page section -->
+      <section class="inner_page_head">
+         <div class="container_fuild">
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="full">
+                     <h3>Register</h3>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </section>
+      <!-- end inner page section -->
+      <!-- why section -->
+      <section class="why_section layout_padding">
+         <div class="container">
+         
+            <div class="row">
+               <div class="col-lg-8 offset-lg-2">
+                  <div class="full">
+                     <form method="POST" action="{% url 'core:register' %}">
+                          {% csrf_token %}  
+                      
+                     <!-- Username Field -->
+                     <div class="mb-3">
+                        {{ form.username }}
+                     </div>
+
+                     <!-- First Name Field -->
+                     <div class="mb-3">
+                        {{ form.first_name }}
+                     </div>
+
+                     <!-- Last Name Field -->
+                     <div class="mb-3">
+                        {{ form.last_name }}
+                     </div>
+
+                     <!-- Email Field -->
+                     <div class="mb-3">
+                        {{ form.email }}
+                     </div>
+
+                     <!-- Password1 Field -->
+                     <div class="mb-3">
+                        {{ form.password1 }}
+                     </div>
+
+                     <!-- Password2 Field -->
+                     <div class="mb-3">
+                        {{ form.password2 }}
+                     </div>
+                     <button type="submit" class="btn btn-secondary">Register</button>
+                     </form>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </section>
+      {% endblock content %}
+     
