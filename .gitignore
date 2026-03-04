@@ -1,13 +1,27 @@
-env
-**/*.pyc
-**/__pycache__
-media
-.DS_Store
+# Virtual environment
+env/
+venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# Database
 *.sqlite3
+
+# Environment variables
+.env
 *.env
 
-# Accept these files in the repository
+# Media uploads
+media/
+
+# OS files
+.DS_Store
+
+# Editor
+.vscode/
+
+# Keep important config
 !.gitignore
 !.travis.yml
-/.env
-/.vscode
