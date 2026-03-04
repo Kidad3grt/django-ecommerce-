@@ -12,8 +12,8 @@
    <meta name="keywords" content="" />
    <meta name="description" content="" />
    <meta name="author" content="" />
-   <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="">
-   <title>Famms - Fashion HTML Template</title>
+   <link rel="shortcut icon" href="{% static 'images/favicon2.png' %}" type="">
+   <title>Shopease -online shopping platform</title>
    <!-- bootstrap core css -->
    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %} " />
    <!-- font awesome style -->
@@ -33,10 +33,10 @@
     <div class="hero_area">
        <!-- header section strats -->
        <header class="header_section">
-          <div class="container">
+          <div class="container-fluid">
              <nav class="navbar navbar-expand-lg custom_nav-container ">
-                <a class="navbar-brand" href="{% url 'core:home' %}"><img width="250" src="{% static 'images/logo.png' %}"
-                      alt="#" /></a>
+                <a class="navbar-brand" href="{% url 'core:home' %}"><img width="300" src="{% static 'images/logobg.png' %}"
+                      alt="Logo" class="logo-img"></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                    <span class=""> </span>
@@ -58,22 +58,52 @@
                       <li class="nav-item">
                          <a class="nav-link" href="{% url 'core:product' %}">Products</a>
                       </li>
+
+                      <li class="nav-item dropdown active">
+                        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button"
+                           aria-haspopup="true" aria-expanded="true">
+                           Categories <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                           {% for category in categories %}
+                              <li><a class="dropdown-item" href="{% url 'core:category_products' category.slug %}">
+                              {{ category.name }}
+                              </a></li>
+                           {% empty %}
+                              <li><a class="dropdown-item" href="#">No categories found</a></li>
+                           {% endfor %}
+                        </ul>
+                        </li>
+
                       <li class="nav-item">
                          <a class="nav-link" href="{% url 'core:blog' %}">Blog</a>
                       </li>
 
                       {% if user.is_authenticated %}
-                      <li class="nav-item">
-                         <a class="nav-link" href="{% url 'core:logout' %}">Logout</a>
-                      </li>
-                      {% else %}
-                      <li class="nav-item">
+                     <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:logout' %}">Logout</a>
+                     </li>
+
+                     <li class="nav-item">
+                        {% if user.is_staff %}
+                              <!-- Admin -->
+                              <a class="nav-link" href="{% url 'core:admin_dashboard' %}">Dashboard</a>
+                        {% elif user.vendorprofile.approved %}
+                              <!-- Approved Vendor -->
+                              <a class="nav-link" href="{% url 'core:dashboard' %}">Dashboard</a>
+                        {% elif user.vendorprofile and not user.vendorprofile.approved %}
+                              <!-- Vendor Pending Approval -->
+                              <a class="nav-link" href="{% url 'core:vendor_pending' %}">Dashboard</a>
+                        {% else %}
+                              <!-- Customer -->
+                              <a class="nav-link" href="{% url 'core:dashboard' %}">Dashboard</a>
+                        {% endif %}
+                     </li>
+                  {% else %}
+                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'core:login' %}">Login</a>
                      </li>
-                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'core:register' %}">Register</a>
-                     </li>
-                       {% endif %}
+                  {% endif %}
                       <li class="nav-item">
                          <a class="nav-link" href="{% url 'core:cart' %}">
                             <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
@@ -135,11 +165,11 @@
                             <span id="cart-total" class="badge bg-danger">{{ cart_items }}</span>
                          </a>
                       </li>
-                      <form class="form-inline">
-                         <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit">
-                            <i class="fa fa-search" aria-hidden="true"></i>
-                         </button>
-                      </form>
+                       <form method="GET" action="{% url 'core:search-results-page' %}" class="d-flex position-relative" style="width: 300px;">
+                        <input class="form-control me-2" type="search" id="searchInput" name="q" placeholder="Search..." autocomplete="off">
+                        <div id="autocompleteBox" class="autocomplete-box"></div>
+                        </form>
+
                    </ul>
                 </div>
              </nav>
@@ -160,6 +190,84 @@
    <script src="{% static 'js/custom.js' %} "></script>
     <!--cart js-->
     <script type="text/javascript" src="{% static 'js/cart.js' %}"></script> 
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('searchInput');
+    const box = document.getElementById('autocompleteBox');
+
+    input.addEventListener('input', () => {
+        const query = input.value.trim();
+        if (!query) {
+            box.innerHTML = '';
+            return;
+        }
+
+        fetch(`/api/autocomplete/?q=${encodeURIComponent(query)}`)
+            .then(res => res.json())
+            .then(data => {
+                box.innerHTML = '';
+                data.forEach(item => {
+                    const div = document.createElement('div');
+                    div.classList.add('autocomplete-item');
+                    div.innerHTML = `
+                     <a href="/item/${item.id}/">
+                        ${item.title} — <small>${item.category}</small>
+                     </a>`;
+
+                    box.appendChild(div);
+                });
+            });
+    });
+
+    // Hide box on outside click
+    document.addEventListener('click', (e) => {
+        if (!box.contains(e.target) && e.target !== input) {
+            box.innerHTML = '';
+        }
+    });
+
+    // Optional: Hide autocomplete if Enter key is pressed
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            box.innerHTML = '';
+        }
+    });
+});
+</script>
+
+<style>
+.autocomplete-box {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    width: 100%;
+    background: white;
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.autocomplete-item {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.autocomplete-item a {
+    text-decoration: none;
+    color: #333;
+    display: block;
+}
+
+.autocomplete-item:hover {
+    background-color: #f0f0f0;
+}
+</style>
+
+
 </body>
 
 </html>

@@ -1,137 +1,145 @@
 {% extends 'core/navbar.html' %}
 {% block content %}
-   <!-- inner page section -->
-   <section class="inner_page_head">
-      <div class="container_fuild">
-         <div class="row">
-            <div class="col-md-12">
-               <div class="full">
-                  <h3>Product Grid</h3>
-               </div>
+
+<!-- inner page section -->
+<section class="inner_page_head">
+   <div class="container_fuild">
+      <div class="row">
+         <div class="col-md-12">
+            <div class="full">
+               <h3>Product Grid</h3>
             </div>
          </div>
       </div>
-   </section>
-   <!-- end inner page section -->
-   <!-- product section -->
-   <section class="product_section layout_padding">
-      <div class="container">
-         <div class="heading_container heading_center">
-            <h2>
-               Our <span>products</span>
-            </h2>
+   </div>
+</section>
+
+<section class="product_section layout_padding">
+   <div class="container">
+      <div class="row">
+         <!-- Sidebar Filters -->
+         <div class="col-md-3">
+            <div class="card p-3">
+               <h5>Filter Products</h5>
+
+               <!-- Search Bar -->
+               <input type="text" id="search" class="form-control mb-3" placeholder="Search products...">
+
+               <!-- Category Filter -->
+               <h6>Category</h6>
+               <select id="category" class="form-control mb-3">
+                  <option value="">All</option>
+                  {% for cat in categories %}
+                  <option value="{{ cat.id }}">{{ cat.name }}</option>
+                  {% endfor %}
+               </select>
+
+               <!-- Price Filter -->
+               <h6>Price Range</h6>
+               <input type="number" id="min_price" class="form-control mb-2" placeholder="Min" value="{{ min_price }}">
+               <input type="number" id="max_price" class="form-control mb-3" placeholder="Max" value="{{ max_price }}">
+
+               <button id="filter-btn" class="btn btn-primary w-100">Apply Filters</button>
+            </div>
          </div>
-         <div class="row">
-            {% for item in items %}
-            <div class="col-sm-6 col-md-4 col-lg-3">
-               <div class="box">
-                  <div class="option_container">
-                     <div class="options">
-                        <button 
-                        data-product="{{ item.id }}" 
-                        data-action="add" 
-                        class="btn btn-outline-secondary option1 update-cart">
-                        Add To Cart
-                     </button>
-                        <a href="" class="option2">
-                           Buy Now
-                        </a>
+
+         <!-- Product Grid -->
+         <div class="col-md-9">
+            <div class="row" id="product-list">
+               {% for item in items %}
+               <div class="col-sm-6 col-md-4 col-lg-3">
+                  <div class="box">
+                     {% if item.on_sale %}
+                     <span class="badge text-uppercase fw-bold position-absolute top-0 start-0 m-2 z-1 badge-flash">
+                        On Sale
+                     </span>
+                     {% endif %}
+                     <div class="option_container">
+                        <div class="options">
+                           <button 
+                              data-product="{{ item.id }}" 
+                              data-action="add" 
+                              class="btn btn-outline-secondary option1 update-cart">
+                              Add To Cart
+                           </button>
+                           <a href="{% url 'core:cart' %}" class="option2">
+                              Buy Now
+                           </a>
+                        </div>
+                     </div>
+                     <div class="img-box">
+                        <img src="{{ item.imageURL }}" alt="{{ item.title }}">
+                     </div>
+                     <div class="detail-box">
+                        <h5>{{ item.title }}</h5>
+                        <h6>${{ item.price|floatformat:2 }}</h6>
                      </div>
                   </div>
-                  <div class="img-box">
-                     <img src="{{item.imageURL}}" alt="">
-                  </div>
-                  <div class="detail-box">
-                     <h5>
-                        {{item.title}}
-                     </h5>
-                     <h6>
-                      ${{item.price|floatformat:2}}
-                     </h6>
-                  </div>
                </div>
-            </div>
-            {% endfor %}
-         </div>
-         <div class="btn-box">
-            <a href="">
-               View All products
-            </a>
-         </div>
-      </div>
-   </section>
- 
-   <!-- end product section -->
-   <!-- footer section -->
-   <footer class="footer_section">
-      <div class="container">
-         <div class="row">
-            <div class="col-md-4 footer-col">
-               <div class="footer_contact">
-                  <h4>
-                     Reach at..
-                  </h4>
-                  <div class="contact_link_box">
-                     <a href="">
-                        <i class="fa fa-map-marker" aria-hidden="true"></i>
-                        <span>
-                           Location
-                        </span>
-                     </a>
-                     <a href="">
-                        <i class="fa fa-phone" aria-hidden="true"></i>
-                        <span>
-                           Call +01 1234567890
-                        </span>
-                     </a>
-                     <a href="">
-                        <i class="fa fa-envelope" aria-hidden="true"></i>
-                        <span>
-                           demo@gmail.com
-                        </span>
-                     </a>
-                  </div>
-               </div>
-            </div>
-            <div class="col-md-4 footer-col">
-               <div class="footer_detail">
-                  <a href="index.html" class="footer-logo">
-                     Famms
-                  </a>
-                  <p>
-                     Necessary, making this the first true generator on the Internet. It uses a dictionary of over 200
-                     Latin words, combined with
-                  </p>
-                  <div class="footer_social">
-                     <a href="">
-                        <i class="fa fa-facebook" aria-hidden="true"></i>
-                     </a>
-                     <a href="">
-                        <i class="fa fa-twitter" aria-hidden="true"></i>
-                     </a>
-                     <a href="">
-                        <i class="fa fa-linkedin" aria-hidden="true"></i>
-                     </a>
-                     <a href="">
-                        <i class="fa fa-instagram" aria-hidden="true"></i>
-                     </a>
-                     <a href="">
-                        <i class="fa fa-pinterest" aria-hidden="true"></i>
-                     </a>
-                  </div>
-               </div>
-            </div>
-            <div class="col-md-4 footer-col">
-               <div class="map_container">
-                  <div class="map">
-                     <div id="googleMap"></div>
-                  </div>
-               </div>
+               {% endfor %}
             </div>
          </div>
       </div>
-   </footer>
-   <!-- footer section -->
-   {% endblock content %}
-  
-   
+   </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+   function fetchProducts() {
+      let search = $("#search").val();
+      let category = $("#category").val();
+      let min_price = $("#min_price").val();
+      let max_price = $("#max_price").val();
+
+      $.ajax({
+         url: "{% url 'core:filter_products' %}",
+         data: {
+            search: search,
+            category: category,
+            min_price: min_price,
+            max_price: max_price,
+         },
+         dataType: "json",
+         success: function (response) {
+            let items = response.items;
+            let html = "";
+
+            if (items.length === 0) {
+               html = "<p class='text-center'>No products found</p>";
+            } else {
+               items.forEach(item => {
+                  html += `
+                  <div class="col-sm-6 col-md-4 col-lg-3">
+                     <div class="box">
+                        ${item.on_sale ? '<span class="badge text-uppercase fw-bold position-absolute top-0 start-0 m-2 z-1 badge-flash">On Sale</span>' : ""}
+                        <div class="option_container">
+                           <div class="options">
+                              <button data-product="${item.id}" data-action="add" class="btn btn-outline-secondary option1 update-cart">Add To Cart</button>
+                              <a href="{% url 'core:cart' %}" class="option2">Buy Now</a>
+                           </div>
+                        </div>
+                        <div class="img-box">
+                           <img src="${item.image}" alt="${item.title}">
+                        </div>
+                        <div class="detail-box">
+                           <h5>${item.title}</h5>
+                           <h6>$${item.price.toFixed(2)}</h6>
+                        </div>
+                     </div>
+                  </div>`;
+               });
+            }
+
+            $("#product-list").html(html);
+         }
+      });
+   }
+
+   // Live search
+   $("#search").on("keyup", fetchProducts);
+
+   // Filter button
+   $("#filter-btn").on("click", fetchProducts);
+</script>
+
+{% endblock content %}

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Order Confirmation</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+  <h2 style="color: #2a9d8f;">Thank you for your order!</h2>
+
+  <p><strong>Order ID:</strong> {{ order.id }}</p>
+  <p><strong>Total:</strong> ${{ total }}</p>
+  <p><strong>Status:</strong> {{ order.payment_status }}</p>
+
+  {% if shipping %}
+  <h3>📦 Shipping Address</h3>
+  <p><strong>Address:</strong> {{ shipping.address }}</p>
+  <p><strong>City:</strong> {{ shipping.city }}, {{ shipping.state }}</p>
+  <p><strong>Zipcode:</strong> {{ shipping.zipcode }}</p>
+  {% endif %}
+
+  <p>You can verify your order here:</p>
+  <p><a href="{{ verify_url }}" style="color: #e76f51;">Verify Order</a></p>
+
+  <hr>
+  <p style="font-size: 12px; color: #777;">
+    This email was sent by YourShop. Please do not reply directly.
+  </p>
+</body>
+</html>

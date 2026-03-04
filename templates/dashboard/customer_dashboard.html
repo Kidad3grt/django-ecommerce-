@@ -1,0 +1,15 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block content %}
+<div class="container-fluid mt-4">
+  <h2 class="mb-4">👤 My Dashboard</h2>
+   <div class="row mt-5">
+    {% include "dashboard/_cards.html" %}
+    <div class="col-md-6">
+      {% include "dashboard/_charts.html" %}
+    </div>
+    <div class="col-md-6">
+      <!-- maybe sales trend, customer stats, etc. -->
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block content %}
+
+<h2 class="mb-4">📦 My Products</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Reason (If Rejected)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in items %}
+        <tr>
+            <td>{{ item.title }}</td>
+            <td>${{ item.price }}</td>
+            <td>
+                {% if item.approval_status == "Pending" %}
+                    <span class="badge bg-warning text-dark">Pending</span>
+                {% elif item.approval_status == "Approved" %}
+                    <span class="badge bg-success">Approved</span>
+                {% else %}
+                    <span class="badge bg-danger">Rejected</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if item.rejection_reason %}
+                    <small>{{ item.rejection_reason }}</small>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

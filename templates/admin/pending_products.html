@@ -1,0 +1,36 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block content %}
+
+<h2 class="mb-4">⏳ Pending Product Approvals</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Vendor</th>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Submitted</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in pending %}
+        <tr>
+            <td>{{ item.vendor.username }}</td>
+            <td>{{ item.title }}</td>
+            <td>${{ item.price }}</td>
+            <td>{{ item.created_at|date:"M d, Y" }}</td>
+            <td>
+                <a href="{% url 'core:approve_product' item.id %}" class="btn btn-success btn-sm">Approve</a>
+                <a href="{% url 'core:reject_product' item.id %}" class="btn btn-danger btn-sm">Reject</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">No pending products.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

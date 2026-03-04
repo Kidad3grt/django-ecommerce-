@@ -1,0 +1,26 @@
+<h4>Your Products</h4>
+<a class="btn btn-primary btn-sm mb-2" href="{% url 'core:add_product' %}">Add Product</a>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Price</th>
+      <th>Stock</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in vendor_products %}
+      <tr id="product-{{ product.id }}">
+        <td>{{ product.title }}</td>
+        <td>{{ product.price }}</td>
+        <td>{{ product.stock }}</td>
+        <td>
+          <a class="btn btn-warning btn-sm" href="{% url 'core:edit_product' product.id %}">Edit</a>
+          <button class="btn btn-danger btn-sm delete-product" data-id="{{ product.id }}">Delete</button>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

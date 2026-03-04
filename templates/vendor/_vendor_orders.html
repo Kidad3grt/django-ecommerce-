@@ -1,0 +1,32 @@
+<h4>Your Orders</h4>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Order #</th>
+      <th>Customer</th>
+      <th>Status</th>
+      <th>Total</th>
+      <th>Change Status</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for order in vendor_orders %}
+      <tr>
+        <td>{{ order.id }}</td>
+        <td>{{ order.customer.user.username }}</td>
+        <td>{{ order.status }}</td>
+        <td>{{ order.total_amount }}</td>
+        <td>
+          <select class="form-select update-status" data-id="{{ order.id }}">
+            <option value="Pending"   {% if order.status == "Pending" %}selected{% endif %}>Pending</option>
+            <option value="Shipped"   {% if order.status == "Shipped" %}selected{% endif %}>Shipped</option>
+            <option value="Delivered" {% if order.status == "Delivered" %}selected{% endif %}>Delivered</option>
+            <option value="Cancelled" {% if order.status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+          </select>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

@@ -74,130 +74,130 @@
 
     <script src="https://www.paypal.com/sdk/js?client-id=Ab7JfUaErnfEJSfv266Vf2OcWvcxzYT98kdv-UHizd3tNRN1SHoWV92uggXBepoMMIDryu1XB3cQgj04&currency=USD"></script>
 
-    <script>
-        var paypalRendered = false;
-        var shipping = '{{ order.shipping }}';
-        var total = parseFloat('{{ order.get_cart_total|floatformat:2 }}').toFixed(2);
-        var user = '{{ request.user }}';
-    
-        // Handle form visibility based on shipping/user state
-        if (shipping == 'false') {
-            document.getElementById('shipping-info').innerHTML = '';
-        }
-    
-        if (user != 'AnonymousUser') {
-            document.getElementById('user-info').innerHTML = '';
-        }
-    
-        if (shipping == 'False' && user != 'AnonymousUser') {
-            document.getElementById('form-wrapper').classList.add("hidden");
-            document.getElementById('payment-info').classList.remove("hidden");
-        }
-    
-        var form = document.getElementById('form');
-        form.addEventListener('submit', function(e){
-            e.preventDefault();
-            console.log('Form submitted...');
-            document.getElementById('form-button').classList.add('hidden');
-            document.getElementById('payment-info').classList.remove('hidden');
-    
-            // Render PayPal buttons only once
-            if (!paypalRendered) {
-                paypal.Buttons({
-                    style: {
-                        color: 'blue',
-                        shape: 'rect',
-                        label: 'paypal',
-                    },
-                    createOrder: function(data, actions) {
-                        return fetch('/paypal/create-order/', {
-                            method: 'post',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRFToken': '{{ csrf_token }}',
-                            },
-                            body: JSON.stringify({total: total})
-                        }).then(res => res.json()).then(data => data.id);
-                    },
-                    onApprove: function(data, actions) {
-                        return fetch(`/paypal/capture-order/${data.orderID}/`, {
-                            method: 'post',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRFToken': '{{ csrf_token }}',
-                            },
-                        })
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data.status === 'COMPLETED') {
-                                console.log('PayPal payment complete, submitting order data...');
-                                submitFormData(); // ✅ call your order handler
-                            } else {
-                                alert('Transaction failed.');
-                            }
-                        })
-                        .catch(err => {
-                            console.error('Payment error:', err);
-                            alert('Something went wrong during the payment.');
-                        });
-                    }
-                }).render('#paypal-button-container');
-                paypalRendered = true;
-            }
-        });
-    
-        function submitFormData() {
-            console.log('Submitting form data to backend...');
-    
-            var userFormData = {
-                'name': null,
-                'email': null,
-                'total': total,
-            };
-    
-            var shippingInfo = {
-                'address': null,
-                'city': null,
-                'state': null,
-                'zipcode': null,
-            };
-    
-            if (shipping != 'false') {
-                shippingInfo.address = form.address.value;
-                shippingInfo.city = form.city.value;
-                shippingInfo.state = form.state.value;
-                shippingInfo.zipcode = form.zipcode.value;
-            }
-    
-            if (user == 'AnonymousUser') {
-                userFormData.name = form.name.value;
-                userFormData.email = form.email.value;
-            }
-    
-            fetch('/process_order/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}',
+<script>
+    var paypalRendered = false;
+    var shipping = '{{ order.shipping }}';
+    var total = parseFloat('{{ order.get_cart_total|floatformat:2 }}').toFixed(2);
+    var user = '{{ request.user }}';
+
+    // Adjust form sections
+    if (shipping == 'false') document.getElementById('shipping-info').innerHTML = '';
+    if (user != 'AnonymousUser') document.getElementById('user-info').innerHTML = '';
+    if (shipping == 'False' && user != 'AnonymousUser') {
+        document.getElementById('form-wrapper').classList.add("hidden");
+        document.getElementById('payment-info').classList.remove("hidden");
+    }
+
+    var form = document.getElementById('form');
+    form.addEventListener('submit', function(e){
+        e.preventDefault();
+        document.getElementById('form-button').classList.add('hidden');
+        document.getElementById('payment-info').classList.remove('hidden');
+
+        if (!paypalRendered) {
+            paypal.Buttons({
+                style: { color: 'blue', shape: 'rect', label: 'paypal' },
+                
+                // Step 1: Create PayPal Order
+                createOrder: function(data, actions) {
+                    return fetch('/paypal/create-order/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}',
+                        },
+                        body: JSON.stringify({ total: total })
+                    })
+                    .then(res => res.json())
+                    .then(orderData => orderData.id);
                 },
-                body: JSON.stringify({ 'form': userFormData, 'shipping': shippingInfo })
-            })
-            .then((response) => {
-                if (!response.ok) throw new Error('Server error');
-                return response.json();
-            })
-            .then((data) => {
-                console.log('Order processed:', data);
-                alert('Order placed successfully!');
-                cart = {};
-                document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/";
-                window.location.href = "{% url 'core:product' %}";
-            })
-            .catch((error) => {
-                console.error('Order submission error:', error);
-                alert('Something went wrong with your order.');
-            });
+
+                // Step 2: Capture PayPal Order
+                onApprove: function(data, actions) {
+                    return fetch(`/paypal/capture-order/${data.orderID}/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}',
+                        },
+                    })
+                    .then(res => res.json())
+                    .then(captureData => {
+                        if (captureData.status === 'COMPLETED') {
+                            console.log('PayPal payment complete ✅', captureData);
+                            // ✅ Send captureData to backend
+                            submitFormData(captureData);
+                        } else {
+                            alert('Transaction failed.');
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Payment error:', err);
+                        alert('Something went wrong during the payment.');
+                    });
+                }
+            }).render('#paypal-button-container');
+            paypalRendered = true;
         }
-    </script>
+    });
+
+    // Step 3: Send PayPal + Shipping Data to Django
+    function submitFormData(captureData) {
+        console.log('Submitting form data to backend...');
+
+        var userFormData = {
+            'name': null,
+            'email': null,
+            'total': total,
+            'paypal_order_id': captureData.id,   // ✅ pass PayPal order ID
+        };
+
+        var shippingInfo = {
+            'address': null,
+            'city': null,
+            'state': null,
+            'zipcode': null,
+        };
+
+        if (shipping != 'false') {
+            shippingInfo.address = form.address.value;
+            shippingInfo.city = form.city.value;
+            shippingInfo.state = form.state.value;
+            shippingInfo.zipcode = form.zipcode.value;
+        }
+
+        if (user == 'AnonymousUser') {
+            userFormData.name = form.name.value;
+            userFormData.email = form.email.value;
+        }
+
+        fetch('/process_order/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: JSON.stringify({ 'form': userFormData, 'shipping': shippingInfo })
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Server error');
+            return response.json();
+        })
+       .then(data => {
+        console.log('Order processed ✅', data);
+        if (data.redirect_url) {
+            window.location.href = data.redirect_url; // ✅ clean redirect
+        } else {
+            alert('Order placed, but no redirect URL received.');
+        }
+    })
+    .catch(error => {
+        console.error('Order submission error:', error);
+        alert('Something went wrong with your order.');
+    });
+ }
+</script>
+
+
     
 {% endblock %}

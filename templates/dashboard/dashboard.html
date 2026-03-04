@@ -1,0 +1,185 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+  <h2 class="mb-4">📊 {{ role }} Dashboard</h2>
+
+  {% include "dashboard/_cards.html" %}
+
+  {% if role == "Vendor" %}
+        <!-- Vendor Sales Cards (Top Products, Total Sales etc) -->
+        {% include "vendor/_vendor_stats.html" %}
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                {% include "vendor/_vendor_products.html" %}
+            </div>
+
+            <div class="col-md-6">
+                {% include "vendor/_vendor_orders.html" %}
+            </div>
+        </div>
+    {% endif %}
+
+  <!-- Filters and Export only for Admin -->
+  {% if role == "Admin" %}
+    <form id="filter-form" class="row g-3 mb-3">
+      <div class="col-md-3">
+        <label>Start Date</label>
+        <input type="date" id="start_date" class="form-control">
+      </div>
+      <div class="col-md-3">
+        <label>End Date</label>
+        <input type="date" id="end_date" class="form-control">
+      </div>
+      <div class="col-md-3">
+        <label>Category</label>
+        <select id="category" class="form-select">
+          <option value="">All</option>
+          {% for cat in categories %}
+            <option value="{{ cat.id }}">{{ cat.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3 d-flex align-items-end">
+        <button type="button" class="btn btn-primary w-100" onclick="applyFilters()">Apply</button>
+      </div>
+    </form>
+
+    <div class="mb-3">
+      <a href="{% url 'core:export_sales_csv' %}" class="btn btn-outline-primary btn-sm">Export CSV</a>
+      <a href="{% url 'core:export_sales_excel' %}" class="btn btn-outline-success btn-sm">Export Excel</a>
+      <a href="{% url 'core:export_sales_pdf' %}" class="btn btn-outline-danger btn-sm">Export PDF</a>
+    </div>
+
+    <!-- Vendor Management Section -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title">Vendor Management</h5>
+
+        <!-- Search Box -->
+        <form method="GET" class="row g-3 mb-3">
+          <div class="col-md-6">
+            <input type="text" name="q" class="form-control" placeholder="Search vendors by username, email, or shop" value="{{ query }}">
+          </div>
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Search</button>
+          </div>
+        </form>
+
+        <!-- Pending Vendors Table -->
+        <h6>Pending Vendors</h6>
+        {% if pending_vendors %}
+        <table class="table table-bordered table-hover align-middle">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Shop Name</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for vendor in pending_vendors %}
+            <tr id="vendor-row-{{ vendor.id }}">
+              <td>{{ forloop.counter }}</td>
+              <td>{{ vendor.user.username }}</td>
+              <td>{{ vendor.user.email }}</td>
+              <td>{{ vendor.shop_name }}</td>
+              <td><span class="badge bg-warning text-dark">Pending</span></td>
+              <td>
+                <button class="btn btn-success btn-sm vendor-action" data-vendor-id="{{ vendor.id }}" data-action="approve">
+                  <i class="bi bi-check-circle-fill"></i> Approve
+                </button>
+                <button class="btn btn-danger btn-sm vendor-action" data-vendor-id="{{ vendor.id }}" data-action="reject">
+                  <i class="bi bi-x-circle-fill"></i> Reject
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+          <p class="text-muted">No vendors are awaiting approval.</p>
+        {% endif %}
+
+        <!-- Approved Vendors Table -->
+        <h6 class="mt-4">Approved Vendors</h6>
+        {% if approved_vendors %}
+        <table class="table table-bordered table-hover align-middle">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Shop Name</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="approved-vendors-body">
+            {% for vendor in approved_vendors %}
+            <tr id="vendor-row-{{ vendor.id }}">
+              <td>{{ forloop.counter }}</td>
+              <td>{{ vendor.user.username }}</td>
+              <td>{{ vendor.user.email }}</td>
+              <td>{{ vendor.shop_name }}</td>
+              <td><span class="badge bg-success">Approved</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+          <p class="text-muted">No vendors have been approved yet.</p>
+        {% endif %}
+      </div>
+    </div>
+
+  {% endif %}
+
+  <!-- Charts Section -->
+  <div class="row mt-4">
+    <div class="{% if role == 'Admin' %}col-md-6{% else %}col-md-12{% endif %}">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">
+            {% if role == "Admin" %} Monthly Sales {% elif role == "Vendor" %} Your Sales Trend {% else %} Your Purchase History {% endif %}
+          </h5>
+          <canvas id="salesChart" data-role="{{ role }}"></canvas>
+        </div>
+      </div>
+    </div>
+
+    {% if role == "Admin" %}
+      <div class="col-md-6">
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title">Top Products</h5>
+            <canvas id="productsChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title">User Growth</h5>
+            <canvas id="userGrowthChart"></canvas>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Chart.js + Dashboard Scripts -->
+<script src="{% static 'js/dashboard.js' %}"></script>
+
+{% if role == "Vendor" %}
+<script src="{% static 'js/vendor_dashboard.js' %}"></script>
+{% endif %}
+
+{% endblock %}
+

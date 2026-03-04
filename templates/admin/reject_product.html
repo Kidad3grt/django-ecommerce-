@@ -1,0 +1,14 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block content %}
+
+<h2 class="mb-4 text-danger">Reject Product: {{ item.title }}</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    <label>Reason for rejection:</label>
+    <textarea class="form-control" name="reason" rows="4" required></textarea>
+
+    <button class="btn btn-danger mt-3">Submit Rejection</button>
+</form>
+
+{% endblock %}

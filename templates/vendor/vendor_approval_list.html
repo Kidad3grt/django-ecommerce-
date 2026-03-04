@@ -1,0 +1,40 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block content %}
+<div class="container mt-4">
+
+  <h3>Pending Vendor Applications</h3>
+
+  <div class="shadow p-4 bg-white rounded">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Shop Name</th>
+          <th>User</th>
+          <th>Date Applied</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for v in pending %}
+        <tr>
+          <td>{{ v.shop_name }}</td>
+          <td>{{ v.user.username }}</td>
+          <td>{{ v.date_created }}</td>
+          <td>
+            <a href="{% url 'approve_vendor' v.id %}" class="btn btn-success btn-sm">
+              Approve
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="text-center text-muted">No pending vendor applications.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+{% endblock %}

@@ -18,8 +18,9 @@
       <section class="why_section layout_padding">
          <div class="container">
          
-            <div class="row">
-               <div class="col-lg-8 offset-lg-2">
+          <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+               <div class="form-wrapper">
                   <div class="full">
                      <form method="POST" action="{% url 'core:register' %}">
                           {% csrf_token %}  
@@ -55,10 +56,17 @@
                      </div>
                      <button type="submit" class="btn btn-secondary">Register</button>
                      </form>
-                  </div>
-               </div>
-            </div>
-         </div>
+                     </div>
+
+                     <div class="mt-3 text-center">
+                   <a href="{% url 'core:register_vendor' %}" class="btn btn-secondary">
+                  Register as a Vendor Instead
+                   </a>
+                     </div>
+                 </div>
+             </div>
+          </div>
+        </div>
       </section>
       {% endblock content %}
      

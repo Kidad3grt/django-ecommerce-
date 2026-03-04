@@ -1,0 +1,47 @@
+{% load static %}
+<div class="row mt-4">
+  {% if role == "Admin" %}
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Monthly Sales</h5>
+          <canvas id="salesChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Top Products</h5>
+          <canvas id="productsChart"></canvas>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if role == "Vendor" %}
+    <div class="col-md-12">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Your Sales Trend</h5>
+          <canvas id="vendorSalesChart"></canvas>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if role == "Customer" %}
+    <div class="col-md-12">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Your Purchase History</h5>
+          <canvas id="customerOrdersChart"></canvas>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>

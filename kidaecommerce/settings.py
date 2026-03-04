@@ -1,11 +1,17 @@
 import os
 
+
 ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
 
 DEBUG = True
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '-05sgp9!deq=q1nltm@^^2cc+v29i(tyybv3v2t77qi66czazj'
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost", 
+    "127.0.0.1", 
+    "[::1]", 
+    ".ngrok-free.app"
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -17,7 +23,10 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'core'
+    'core',
+    'django_filters',
+    'rest_framework',
+    "qr_code",
 ]
 
 MIDDLEWARE = [
@@ -44,6 +53,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'core.context_processors.category_list',
             ],
         },
     },
@@ -67,6 +77,9 @@ DATABASES = {
         "NAME": os.path.join(BASE_DIR, 'db.sqlite3')
     }
 }
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 
 if ENVIRONMENT == 'production':
     DEBUG = False
@@ -92,6 +105,10 @@ AUTHENTICATION_BACKENDS = [
 
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
+
 SITE_ID = 1
 
 from decouple import config
@@ -99,3 +116,15 @@ from decouple import config
 PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
 PAYPAL_CLIENT_SECRET = config('PAYPAL_CLIENT_SECRET')
 PAYPAL_ENVIRONMENT = config('PAYPAL_ENVIRONMENT', default='sandbox')
+
+# Email Configuration
+import environ
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")  # e.g. yourshop@gmail.com
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")  # the 16-char app password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

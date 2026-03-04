@@ -1,0 +1,50 @@
+<div class="row g-3">
+  <!-- Total Sales -->
+  <div class="col-md-3 col-sm-6">
+    <div class="card dashboard-card p-3 text-center bg-primary text-white shadow-sm">
+      <h6 class="mb-1">Total Sales</h6>
+      <h2 class="fw-bold">${{ total_sales|default:"0" }}</h2>
+    </div>
+  </div>
+
+  <!-- Orders -->
+  <div class="col-md-3 col-sm-6">
+    <div class="card dashboard-card p-3 text-center bg-success text-white shadow-sm">
+      <h6 class="mb-1">Orders</h6>
+      <h2 class="fw-bold">{{ total_orders|default:"0" }}</h2>
+    </div>
+  </div>
+
+  <!-- Role-specific -->
+  {% if role == "Admin" %}
+    <div class="col-md-3 col-sm-6">
+      <div class="card dashboard-card p-3 text-center bg-warning text-dark shadow-sm">
+        <h6 class="mb-1">Customers</h6>
+        <h2 class="fw-bold">{{ total_customers|default:"0" }}</h2>
+      </div>
+    </div>
+  {% elif role == "Vendor" %}
+    <div class="col-md-3 col-sm-6">
+      <div class="card dashboard-card p-3 text-center bg-warning text-dark shadow-sm">
+        <h6 class="mb-1">Products</h6>
+        <h2 class="fw-bold">{{ total_products|default:"0" }}</h2>
+      </div>
+    </div>
+  {% elif role == "Customer" %}
+    <div class="col-md-3 col-sm-6">
+      <div class="card dashboard-card p-3 text-center bg-warning text-dark shadow-sm">
+        <h6 class="mb-1">Items Purchased</h6>
+        <h2 class="fw-bold">{{ total_items|default:"0" }}</h2>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Top Product -->
+  <div class="col-md-3 col-sm-6">
+    <div class="card dashboard-card p-3 text-center bg-danger text-white shadow-sm">
+      <h6 class="mb-1">Top Product</h6>
+      <h2 class="fw-bold">{{ top_product|default:"N/A" }}</h2>
+    </div>
+  </div>
+</div>
+

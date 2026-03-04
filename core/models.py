@@ -2,24 +2,52 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.utils.text import slugify
 
 
 # Create your models here.
+class Category(models.Model):
+    name = models.CharField(max_length=200, null=True)
+    slug = models.SlugField(unique=True, blank=True)  # allow blank so it can be auto-filled
 
-class Customer(models.Model):
-	user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
-	name = models.CharField(max_length=200, null=True)
-	email = models.EmailField(null=True, blank=True)
+    def save(self, *args, **kwargs):
+        if not self.slug and self.name:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
-def __str__(self):
-  return self.name or self.email or "Guest Customer"
+    def __str__(self):
+        return self.name
+
+class Customer(models.Model): 
+    user = models.OneToOneField(User, null=True, blank=True, on_delete=models.CASCADE)
+    name = models.CharField(max_length=200, null=True)
+    email = models.EmailField(null=True, blank=True)
+
+    def __str__(self):
+        return self.name or self.email or "Guest Customer"
 
 class Item(models.Model):
+    vendor = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=100, null=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
     price = models.DecimalField(max_digits=7,decimal_places=2) 
     image = models.ImageField(null=True, blank=True)
     digital = models.BooleanField(default=False, null= True, blank= False)
-
+    on_sale = models.BooleanField(default=False, null= True, blank= False)
+     
+    is_approved = models.BooleanField(default=False)
+    approval_status = models.CharField(
+        max_length=20,
+        choices=[
+            ("Pending", "Pending"),
+            ("Approved", "Approved"),
+            ("Rejected", "Rejected"),
+        ],
+        default="Pending"
+    )
+    rejection_reason = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
@@ -33,14 +61,22 @@ class Item(models.Model):
         return url
 
 
-
-
 class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
     date_ordered = models.DateTimeField(auto_now_add=True)
     ordered = models.BooleanField(default=False)
     transaction_id = models.CharField(max_length=100, null= True)
+    paypal_order_id = models.CharField(max_length=100, null=True, blank=True)
 
+    # ✅ add payment status
+    PAYMENT_STATUS_CHOICES = [
+        ('PENDING', 'Pending'),
+        ('COMPLETED', 'Completed'),
+        ('FAILED', 'Failed'),
+    ]
+    payment_status = models.CharField(
+        max_length=20, choices=PAYMENT_STATUS_CHOICES, default='PENDING'
+    )
     def __str__(self):
         return str(self.id)
         
@@ -91,5 +127,15 @@ class Shippingdetails(models.Model):
 
   def __str__(self):
      return self.address
+
+class VendorProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    shop_name = models.CharField(max_length=100)
+    approved = models.BooleanField(default=False)
+    date_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.shop_name
+
 
 

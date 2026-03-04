@@ -12,8 +12,8 @@
    <meta name="keywords" content="" />
    <meta name="description" content="" />
    <meta name="author" content="" />
-   <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="">
-   <title>Famms - Fashion HTML Template</title>
+   <link rel="shortcut icon" href="{% static 'images/favicon2.png' %}" type="">
+   <title>Shopease -online shopping platform</title>
    <!-- bootstrap core css -->
    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %} " />
    <!-- font awesome style -->
@@ -35,7 +35,7 @@
     <header class="header_section">
         <div class="container">
            <nav class="navbar navbar-expand-lg custom_nav-container ">
-              <a class="navbar-brand" href="{% url 'core:home' %}"><img width="250" src="{% static 'images/logo.png' %}"
+              <a class="navbar-brand" href="{% url 'core:home' %}"><img width="250" src="{% static 'images/logobg.png' %}"
                     alt="#" /></a>
               <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                  aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,9 +70,6 @@
                     <li class="nav-item">
                       <a class="nav-link" href="{% url 'core:login' %}">Login</a>
                    </li>
-                   <li class="nav-item">
-                     <a class="nav-link" href="{% url 'core:register' %}">Register</a>
-                  </li>
                      {% endif %}
                     <li class="nav-item">
                        <a class="nav-link" href="{% url 'core:cart' %}">

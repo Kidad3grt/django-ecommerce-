@@ -118,7 +118,7 @@ a:focus {
 .sub_page .hero_area {
   min-height: auto;
   -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.25);
-          box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.25);
 }
 
 .header_section {
@@ -131,8 +131,14 @@ a:focus {
 }
 
 .navbar-brand {
-  font-family: 'Playfair Display', serif;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
 }
+
+.container-fluid {
+  padding-left: 0;
+}
+
 
 .navbar-brand span {
   font-weight: bold;
@@ -145,7 +151,8 @@ a:focus {
 }
 
 .custom_nav-container .navbar-nav {
-  margin-left: auto;
+  margin-left: 80px;
+  margin-top: 20px;
 }
 
 .custom_nav-container .navbar-nav .nav-item .nav-link {
@@ -257,18 +264,13 @@ a:focus {
       -ms-flex-align: center;
           align-items: center;
   position: relative;
-  padding: 90px 0 75px 0;
+  padding: 0;
 }
 
-.slider_section .row {
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-}
 
 .slider_section #customCarousel1 {
   width: 100%;
-  position: unset;
+  position: relative;
 }
 
 .slider_section .detail-box h1 {
@@ -280,7 +282,7 @@ a:focus {
 }
 
 .slider_section .detail-box h1 span {
-  color: #f7444e;
+  color: white;
 }
 
 .slider_section .detail-box p {
@@ -288,6 +290,29 @@ a:focus {
     margin-top: 20px;
     margin-bottom: 1.5rem;
 }
+
+.slider_section .detail-box {
+  position: absolute;
+  top: 50%;
+  left: 2%;
+  right: 2%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0); /* make background visible */
+  padding: 20px 30px;
+  border-radius: 10px;
+  color: #fff;
+  width: 90%;  /* relative width instead of fixed max-width */
+  max-width: 500px; /* still limit max width on large screens */
+  z-index: 3;
+  box-sizing: border-box;
+
+  &.right-position {
+    left: auto;
+    right: 2%;
+    transform: translateY(-50%);
+    text-align: left;
+  }
+ }
 
 .slider_section .detail-box a {
     display: inline-block;
@@ -307,20 +332,18 @@ a:focus {
   color: #f7444e;
 }
 
-.slider_section .img-box img {
-  width: 100%;
-}
 
 .slider_section .carousel-indicators {
-  position: unset;
+  position: absolute;
+  left: 30px;
+  right: auto;
+  bottom: 30px;
   margin: 0;
-  margin-top: 45px;
-  -webkit-box-pack: start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  z-index: 10;
 }
 
 .slider_section .carousel-indicators li {
@@ -335,24 +358,6 @@ a:focus {
   width: 20px;
   height: 20px;
   background-color: #f7444e;
-}
-
-.slider_bg_box {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-}
-
-.slider_bg_box img {
-  width: 100%;
-  height: 100%;
-  -o-object-fit: cover;
-     object-fit: cover;
-  -o-object-position: top right;
-     object-position: top right;
 }
 
 .product_section .heading_container {
@@ -400,6 +405,22 @@ a:focus {
       -ms-flex-pack: justify;
           justify-content: space-between;
 }
+
+.badge-flash {
+  animation: flashColor 1s infinite alternate;
+}
+
+@keyframes flashColor {
+  0% {
+    background-color: #dc3545; /* Bootstrap red */
+    color: #fff;
+  }
+  100% {
+    background-color: #000;    /* Black */
+    color: #fff;
+  }
+}
+
 
 .product_section .box .detail-box h5 {
   font-size: 18px;
@@ -790,7 +811,7 @@ a:focus {
 
 /* footer section*/
 .footer_section {
-  background-color: #002c3e;
+  background-color: #1a0a0a;
   color: #ffffff;
   padding-top: 70px;
 }
@@ -960,7 +981,7 @@ li.nav-item ul li a:hover, li.nav-item ul li a:focus {
 }
 
 .inner_page_head {
-    background: #f7444e;
+    background: #1a0a0a;
     text-align: center;
     color: #fff;
     padding-top: 50px;
@@ -1065,6 +1086,15 @@ form input {
     line-height: normal;
 }
 
+.form-wrapper {
+  border: 1px solid #ccc;
+  padding: 30px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  margin-top: 40px;
+}
+
 form textarea {
     background: #fff;
     border: solid #ccc 1px;
@@ -1120,7 +1150,49 @@ form input[type="submit"]:focus {
     font-weight: 400;
 }
 
-http://kute-themes.com/html/boutique/html/index.html
-https://template.hasthemes.com/noraure/noraure/index.html
-https://preview.hasthemes.com/xoss-preview/xoss/index.html
+.payment-card {
+        max-width: 650px;
+        margin: 50px auto;
+        background: #ffffff;
+        padding: 35px;
+        border-radius: 15px;
+        box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
+        transition: transform .2s ease-in-out;
+}
+
+.payment-card:hover {
+        transform: translateY(-4px);
+    }
+
+.success-icon {
+        font-size: 70px;
+        color: #28a745;
+    }
+
+.order-list {
+        text-align: left;
+        margin: 0 auto;
+        max-width: 450px;
+    }
+
+.receipt-box {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #e5e5e5;
+    }
+
+.qr-section {
+        padding: 20px;
+        border-radius: 12px;
+        background: #fdfdfd;
+        border: 1px dashed #ccc;
+        display: inline-block;
+    }
+
+.btn-custom {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 500;
+    }
 
