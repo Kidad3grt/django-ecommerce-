@@ -1,7 +1,3 @@
-autopep8==1.4.4
-pep8==1.7.1
-pycodestyle==2.5.0
-sqlparse==0.2.4
 aiohappyeyeballs==2.4.3
 aiohttp==3.10.10
 aiosignal==1.3.1
@@ -9,6 +5,8 @@ annotated-types==0.7.0
 asgiref==3.8.1
 asttokens==2.4.1
 attrs==24.2.0
+autopep8==1.4.4
+build==1.4.0
 certifi==2025.8.3
 charset-normalizer==3.4.0
 colorama==0.4.6
@@ -40,7 +38,6 @@ jupyter_core==5.7.2
 kiwisolver==1.4.7
 matplotlib==3.9.2
 matplotlib-inline==0.1.7
-matplotlip==0.2
 multidict==6.1.0
 multiprocess==0.70.16
 nest-asyncio==1.6.0
@@ -48,17 +45,20 @@ numpy==2.1.2
 packaging==24.1
 pandas==2.2.3
 parso==0.8.4
+pep8==1.7.1
 pillow==10.4.0
 platformdirs==4.3.6
 prompt_toolkit==3.0.48
 propcache==0.2.0
 psutil==6.0.0
 pure_eval==0.2.3
-pyarrow==17.0.0
+pyarrow==23.0.1
+pycodestyle==2.5.0
 pydantic==2.11.9
 pydantic_core==2.33.2
 Pygments==2.18.0
 pyparsing==3.1.4
+pyproject_hooks==1.2.0
 python-dateutil==2.9.0.post0
 python-decouple==3.8
 pytz==2024.2
@@ -70,6 +70,7 @@ RapidFuzz==3.13.0
 reportlab==4.4.4
 requests==2.32.5
 segno==1.6.6
+setuptools==82.0.1
 six==1.16.0
 sqlparse==0.5.3
 stack-data==0.6.3
@@ -81,5 +82,6 @@ typing_extensions==4.12.2
 tzdata==2024.2
 urllib3==2.5.0
 wcwidth==0.2.13
+wheel==0.46.3
 xxhash==3.5.0
 yarl==1.16.0
